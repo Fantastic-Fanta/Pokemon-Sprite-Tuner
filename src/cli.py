@@ -31,15 +31,14 @@ def main():
         if not isinstance(cfg, dict):
             cfg = {}
 
-        base_invert = bool(cfg.get("invert", True))
+        if "invert" in cfg:
+            base_invert = bool(cfg["invert"])
         if "contrast" in cfg:
             base_contrast = float(cfg["contrast"])
 
-        bg_val = cfg.get("bg", False)
+        bg_val = cfg.get("bg")
         if isinstance(bg_val, str):
             bg_path = resolve_bg_path(bg_val)
-        elif bg_val:
-            bg_path = resolve_bg_path()
         else:
             bg_path = None
 
@@ -48,13 +47,14 @@ def main():
             use_glow = True
             glow_opts["ring_opacities"] = list(rings)
             glow_opts["contour_rings"] = len(rings)
-            if "contrast" in cfg:
-                glow_opts["contrast"] = float(cfg["contrast"])
-            output_format = cfg.get("output_format")
-            if isinstance(output_format, str):
-                glow_opts["output_format"] = output_format
         else:
             use_glow = False
+
+        if "contrast" in cfg:
+            glow_opts["contrast"] = float(cfg["contrast"])
+        output_format = cfg.get("output_format")
+        if isinstance(output_format, str):
+            glow_opts["output_format"] = output_format
 
     input_arg = args.input
     output_path = args.output
