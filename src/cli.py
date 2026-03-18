@@ -1,8 +1,8 @@
 import argparse
 from pathlib import Path
 
-from .reskin_io import resolve_input, resolve_bg_path, load_presets
-from .reskin_process import process_gif, process_gif_with_glow
+from .io import resolve_input, resolve_bg_path, load_presets
+from .img import process_gif, process_gif_with_glow
 
 
 def main():
