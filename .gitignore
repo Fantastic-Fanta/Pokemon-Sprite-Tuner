@@ -1,2 +1,7 @@
-./output
-./ENV
+outputs/
+ENV/
+env/
+.venv/
+venv/
+
+__pycache__/
