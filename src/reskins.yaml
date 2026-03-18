@@ -1,0 +1,16 @@
+phantom:
+  greyscale: true
+  contrast: 0.7
+  invert: true
+  glow_rings: [0.25, 0.12, 0.05]
+  bg: true
+
+glitch:
+  greyscale: true
+  invert: true
+  bg: true
+
+whiteout:
+  greyscale: true
+  contrast: 0.7
+  bg: true
