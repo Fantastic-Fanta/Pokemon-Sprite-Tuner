@@ -14,7 +14,7 @@ def process_gif(
     path = Path(input_path)
     img = Image.open(input_path)
 
-    outputs_dir = Path(__file__).resolve().parent.parent / "outputs"
+    outputs_dir = Path(__file__).resolve().parent.parent / "output"
     outputs_dir.mkdir(parents=True, exist_ok=True)
 
     if output_path is None:
@@ -97,6 +97,8 @@ def process_gif(
             loop=loop,
             **save_kw,
         )
+
+    print(output_path)
 
 
 def _get_neighbors(x, y, width, height):
@@ -198,7 +200,7 @@ def process_gif_with_glow(
     path = Path(input_path)
     img = Image.open(input_path)
 
-    outputs_dir = Path(__file__).resolve().parent.parent / "outputs"
+    outputs_dir = Path(__file__).resolve().parent.parent / "output"
     outputs_dir.mkdir(parents=True, exist_ok=True)
 
     if output_path is None:
@@ -342,4 +344,6 @@ def process_gif_with_glow(
                 loop=loop,
                 **save_kw,
             )
+
+    print(output_path)
 

@@ -31,7 +31,7 @@ def resolve_bg_path(path_arg=None, base_dir=None):
         if not p.is_absolute():
             p = base_dir / p
         return str(p)
-    return str(base_dir / "bg.png")
+    return str(base_dir / "plain.png")
 
 
 def load_presets(config_path=None):

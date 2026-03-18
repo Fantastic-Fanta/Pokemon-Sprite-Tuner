@@ -13,7 +13,7 @@ def main():
 
     parser.add_argument("input", help="Pokémon name (Showdown sprite) or path to a GIF file")
     parser.add_argument("output", nargs="?", help="Optional output path (basename only is used)")
-    parser.add_argument("--preset", metavar="NAME", help="Named preset from reskins.yaml")
+    parser.add_argument("--preset", required=True, metavar="NAME", help="Preset name from reskins.yaml")
 
     args = parser.parse_args()
 
@@ -22,35 +22,26 @@ def main():
     use_glow = False
     glow_opts = {}
     bg_path = None
-    is_whiteout = False
     base_contrast = 1.0
     base_invert = True
 
     def apply_preset(name):
-        nonlocal use_glow, bg_path, is_whiteout, base_contrast, base_invert
+        nonlocal use_glow, bg_path, base_contrast, base_invert
         cfg = presets.get(name, {}) if isinstance(presets, dict) else {}
         if not isinstance(cfg, dict):
             cfg = {}
 
         base_invert = bool(cfg.get("invert", True))
-        is_whiteout = not base_invert
         if "contrast" in cfg:
             base_contrast = float(cfg["contrast"])
 
         bg_val = cfg.get("bg", False)
         if isinstance(bg_val, str):
-            bg_path_local = resolve_bg_path(bg_val, base_dir=project_root)
+            bg_path = resolve_bg_path(bg_val)
         elif bg_val:
-            bg_path_local = resolve_bg_path(base_dir=project_root)
+            bg_path = resolve_bg_path()
         else:
-            bg_path_local = None
-
-        nonlocal_bg = "bg_path"
-        globals()[nonlocal_bg]
-        locals()[nonlocal_bg] if False else None
-        bg_path_container = [bg_path]
-        bg_path_container[0] = bg_path_local
-        bg_path = bg_path_container[0]
+            bg_path = None
 
         rings = cfg.get("glow_rings")
         if isinstance(rings, (list, tuple)) and rings:
@@ -59,18 +50,20 @@ def main():
             glow_opts["contour_rings"] = len(rings)
             if "contrast" in cfg:
                 glow_opts["contrast"] = float(cfg["contrast"])
-            if name == "phantom":
-                glow_opts.setdefault("output_format", "WEBP")
+            output_format = cfg.get("output_format")
+            if isinstance(output_format, str):
+                glow_opts["output_format"] = output_format
         else:
             use_glow = False
 
-    preset_name = args.preset or None
-    if preset_name:
-        glow_opts.clear()
-        apply_preset(preset_name)
-
     input_arg = args.input
     output_path = args.output
+
+    preset_name = args.preset
+    glow_opts.clear()
+    apply_preset(preset_name)
+
+    print(f"Using preset='{preset_name}' for input='{input_arg}'")
 
     input_path, output_base = resolve_input(input_arg)
     if use_glow:
@@ -82,10 +75,14 @@ def main():
             output_path,
             output_base=output_base,
             bg_path=bg_path,
-            invert=not is_whiteout if base_invert else False,
+            invert=base_invert,
             contrast=base_contrast,
         )
 
     if Path(input_path).name.startswith("_tmp_"):
         Path(input_path).unlink(missing_ok=True)
+
+
+if __name__ == "__main__":
+    main()
 
